@@ -3,131 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공유형 탁구 용품 대여 대장</title>
+    <title>탁구 용품 대여 대장</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; font-family: 'Noto Sans KR', sans-serif; }
-        body { background-color: #f4f6f8; margin: 0; padding: 16px; }
-        
-        /* 기본 모바일 레이아웃 및 PC 넓은 화면 반응형 트랜지션 */
-        .container { 
-            max-width: 550px; 
-            margin: 0 auto; 
-            background: white; 
-            padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            transition: max-width 0.3s ease;
-        }
-
-        /* 관리자 모드 활성화 시 PC 및 큰 화면 대응 모드 */
-        .container.admin-mode {
-            max-width: 900px;
-        }
-
-        h2 { text-align: center; color: #2c3e50; margin-top: 0; }
-        
-        .form-group { margin-bottom: 12px; }
-        label { display: block; font-weight: bold; margin-bottom: 4px; color: #34495e; font-size: 14px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
-        
-        .row { display: flex; gap: 10px; }
-        .row .form-group { flex: 1; }
-
-        button.btn-submit { width: 100%; padding: 12px; background-color: #27ae60; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 8px; }
-        button.btn-submit:hover { background-color: #219150; }
-
-        hr { border: 0; height: 1px; background: #e0e0e0; margin: 20px 0; }
-
-        .list-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #2c3e50; }
-        .rental-item { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .rental-info { font-size: 14px; line-height: 1.4; }
-        .rental-info strong { font-size: 16px; color: #2c3e50; }
-        .rental-info .time { font-size: 12px; color: #7f8c8d; }
-
-        .btn-return { background-color: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .btn-return:hover { background-color: #c0392b; }
-        
-        .returned { opacity: 0.5; background: #f1f1f1; }
-        .badge-returned { background: #95a5a6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-
-        /* 관리자 모드 스타일 */
-        .admin-section { margin-top: 25px; padding-top: 15px; border-top: 2px dashed #bdc3c7; }
-        .admin-auth-box { display: flex; gap: 8px; margin-bottom: 10px; }
-        .admin-auth-box input { flex: 1; padding: 8px; font-size: 14px; }
-        .btn-admin { background-color: #34495e; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap; }
-        .btn-admin:hover { background-color: #2c3e50; }
-        
-        .admin-panel { display: none; margin-top: 15px; background: #edf2f7; padding: 16px; border-radius: 8px; }
-        .admin-summary { font-size: 14px; color: #2c3e50; margin-bottom: 12px; font-weight: bold; line-height: 1.5; }
-        
-        /* 필터 및 검색 컨트롤 레이아웃 */
-        .admin-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; justify-content: space-between; align-items: center; }
-        .admin-tabs { display: flex; gap: 6px; flex: 1; min-width: 240px; }
-        .admin-tab { flex: 1; padding: 8px 10px; border: 1px solid #cbd5e0; background: white; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; color: #4a5568; }
-        .admin-tab.active { background: #3182ce; color: white; border-color: #3182ce; }
-        
-        .admin-search-box { display: flex; gap: 6px; flex: 1; min-width: 260px; }
-        .admin-search-box input { padding: 8px 10px; font-size: 13px; }
-        
-        .btn-excel { background-color: #27ae60; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; }
-        .btn-excel:hover { background-color: #219150; }
-
-        .btn-logout { background-color: #e53e3e; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .btn-logout:hover { background-color: #c53030; }
-
-        /* 테이블 스태킹 & 가로 확장 */
-        .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; border-radius: 6px; overflow: hidden; }
-        .admin-table th, .admin-table td { border: 1px solid #e2e8f0; padding: 10px 8px; text-align: center; }
-        .admin-table th { background-color: #f7fafc; color: #4a5568; font-weight: bold; }
-        .status-renting { color: #e67e22; font-weight: bold; }
-        .status-done { color: #27ae60; font-weight: bold; }
-
-        .btn-action-edit { background: #3182ce; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; margin-right: 2px; }
-        .btn-action-del { background: #e53e3e; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); }
     </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen pb-12">
 
-    <!-- Firebase SDK 모듈 불러오기 -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } 
-        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    <div class="max-w-4xl mx-auto px-4 py-6 transition-all duration-300" id="app-container">
+        
+        <!-- Header -->
+        <header class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-14 h-14 bg-emerald-500 text-white rounded-2xl shadow-lg mb-3">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">🏓 탁구 용품 대여 대장</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1" id="storage-status-text">
+                📱 데이터가 이 기기(브라우저)에 안전하게 자동 저장됩니다.
+            </p>
+        </header>
 
-      // ⚠️ 본인의 Firebase 설정 정보로 대체하세요
-      const firebaseConfig = {
-        apiKey: "FIREBASE_API_KEY_HERE",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "SENDER_ID",
-        appId: "APP_ID"
-      };
+        <!-- Rental Form Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 sm:p-6 mb-6">
+            <h2 class="text-base font-bold text-slate-700 mb-4 flex items-center gap-2">
+                <span class="w-2 h-4 bg-emerald-500 rounded-full inline-block"></span>
+                신규 대여 등록
+            </h2>
+            
+            <form id="rental-form" onsubmit="handleFormSubmit(event)">
+                <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
+                    <div>
+                        <label for="dong" class="block text-xs font-semibold text-slate-600 mb-1">동</label>
+                        <input type="text" id="dong" placeholder="예: 101" inputmode="numeric" required
+                            class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                    </div>
+                    <div>
+                        <label for="ho" class="block text-xs font-semibold text-slate-600 mb-1">호수</label>
+                        <input type="text" id="ho" placeholder="예: 502" inputmode="numeric" required
+                            class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                    </div>
+                </div>
 
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      const rentalsRef = collection(db, "tableTennisRentals");
+                <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-5">
+                    <div>
+                        <label for="racket" class="block text-xs font-semibold text-slate-600 mb-1">라켓 수량</label>
+                        <select id="racket" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                            <option value="2개 (1세트)">2개 (1세트)</option>
+                            <option value="4개 (2세트)">4개 (2세트)</option>
+                            <option value="1개">1개</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="ball" class="block text-xs font-semibold text-slate-600 mb-1">탁구공 수량</label>
+                        <select id="ball" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                            <option value="2개">2개</option>
+                            <option value="1개">1개</option>
+                            <option value="3개 이상">3개 이상</option>
+                        </select>
+                    </div>
+                </div>
 
-      // 전체 데이터 캐시 및 상태 변수
-      let allRentalsData = [];
-      let isAdminLoggedIn = false;
-      let currentFilter = 'all'; // 'all', 'renting', 'returned'
+                <button type="submit" class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all text-sm sm:text-base">
+                    대여 작성 완료
+                </button>
+            </form>
+        </div>
 
-      // 1. 실시간 대여 등록 함수
-      window.addRental = async function() {
-        const dong = document.getElementById('dong').value.trim();
-        const ho = document.getElementById('ho').value.trim();
-        const racket = document.getElementById('racket').value;
-        const ball = document.getElementById('ball').value;
+        <!-- Current Rentals List Section -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 sm:p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-base font-bold text-slate-700 flex items-center gap-2">
+                    <span class="w-2 h-4 bg-blue-500 rounded-full inline-block"></span>
+                    현재 대여 현황
+                </h2>
+                <span id="active-count-badge" class="px-2.5 py-0.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-full border border-blue-100">
+                    0건 대여 중
+                </span>
+            </div>
 
-        if (!dong || !ho) {
-            alert('동과 호수를 입력해주세요.');
-            return;
+            <div id="rental-list" class="space-y-3">
+                <!-- Data dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Admin Section Header & Toggle -->
+        <div class="bg-slate-800 text-white rounded-2xl shadow-md p-5 sm:p-6 border border-slate-700">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    <h2 class="text-base font-bold text-slate-100">🔒 PC & 통합 관리자 모드</h2>
+                </div>
+                <button id="btn-logout" onclick="logoutAdmin()" class="hidden px-3 py-1 bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-semibold rounded-lg transition-all">
+                    로그아웃
+                </button>
+            </div>
+
+            <!-- Admin Login Auth Box -->
+            <div id="admin-auth-box" class="flex gap-2">
+                <input type="password" id="admin-pw" placeholder="관리자 비밀번호 (초기값: 0801)" 
+                    class="flex-1 px-3 py-2 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30">
+                <button onclick="checkAdmin()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm rounded-xl transition-all">
+                    접속
+                </button>
+            </div>
+
+            <!-- Admin Panel Content (Hidden by default) -->
+            <div id="admin-panel" class="hidden mt-4 pt-4 border-t border-slate-700">
+                
+                <!-- Admin Summary Statistics -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-4 text-center">
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/60">
+                        <div class="text-xs text-slate-400 font-medium mb-1">총 누적</div>
+                        <div class="text-lg sm:text-xl font-black text-white" id="stat-total">0건</div>
+                    </div>
+                    <div class="bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">
+                        <div class="text-xs text-amber-400 font-medium mb-1">대여 중</div>
+                        <div class="text-lg sm:text-xl font-black text-amber-400" id="stat-renting">0건</div>
+                    </div>
+                    <div class="bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20">
+                        <div class="text-xs text-emerald-400 font-medium mb-1">반납 완료</div>
+                        <div class="text-lg sm:text-xl font-black text-emerald-400" id="stat-returned">0건</div>
+                    </div>
+                </div>
+
+                <!-- Admin Controls: Filters, Search, CSV Export, Data Backup -->
+                <div class="flex flex-col sm:flex-row gap-2 sm:items-center justify-between mb-4">
+                    <!-- Tabs -->
+                    <div class="flex bg-slate-900 p-1 rounded-xl gap-1">
+                        <button onclick="setAdminFilter('all')" id="tab-all" class="flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg text-amber-400 bg-slate-800 transition-all">전체</button>
+                        <button onclick="setAdminFilter('renting')" id="tab-renting" class="flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all">대여 중</button>
+                        <button onclick="setAdminFilter('returned')" id="tab-returned" class="flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all">반납 완료</button>
+                    </div>
+
+                    <!-- Search and Export Buttons -->
+                    <div class="flex gap-2">
+                        <input type="text" id="admin-search" placeholder="동/호수 검색..." oninput="renderAdminTable()" 
+                            class="flex-1 sm:w-36 px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none">
+                        <button onclick="downloadExcel()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1 whitespace-nowrap">
+                            📊 CSV 엑셀
+                        </button>
+                        <button onclick="openSyncModal()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1 whitespace-nowrap">
+                            📲 PC/모바일 이동
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Table Container for PC/Large screens -->
+                <div class="overflow-x-auto rounded-xl border border-slate-700 bg-slate-900/90">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-800 text-slate-400 font-semibold border-b border-slate-700 uppercase">
+                            <tr>
+                                <th class="p-3 text-center">호실</th>
+                                <th class="p-3">대여 품목</th>
+                                <th class="p-3">대여 시각</th>
+                                <th class="p-3">반납 시각</th>
+                                <th class="p-3 text-center">상태</th>
+                                <th class="p-3 text-center">관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-slate-800">
+                            <!-- Dynamically generated rows -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Admin Footer Actions -->
+                <div class="mt-4 flex justify-between items-center text-xs text-slate-400">
+                    <span>💡 PC와 휴대폰 간의 기록을 백업/이전하려면 'PC/모바일 이동' 버튼을 활용하세요.</span>
+                    <button onclick="confirmResetAll()" class="text-rose-400 hover:text-rose-300 underline">전체 데이터 초기화</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal Dialogs (No alert or confirm used) -->
+    
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-100">
+            <h3 class="text-lg font-bold text-slate-800 mb-2" id="confirm-modal-title">확인</h3>
+            <p class="text-sm text-slate-600 mb-5 leading-relaxed" id="confirm-modal-message">이 작업을 진행하시겠습니까?</p>
+            <div class="flex justify-end gap-2">
+                <button id="confirm-modal-cancel" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl">취소</button>
+                <button id="confirm-modal-ok" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Rental Item Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
+            <h3 class="text-base font-bold text-slate-800 mb-4">✏️ 대여 내역 수정</h3>
+            <form id="edit-form" onsubmit="handleEditFormSubmit(event)" class="space-y-4">
+                <input type="hidden" id="edit-id">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">동</label>
+                        <input type="text" id="edit-dong" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">호수</label>
+                        <input type="text" id="edit-ho" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">라켓</label>
+                        <select id="edit-racket" class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm">
+                            <option value="2개 (1세트)">2개 (1세트)</option>
+                            <option value="4개 (2세트)">4개 (2세트)</option>
+                            <option value="1개">1개</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">탁구공</label>
+                        <select id="edit-ball" class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm">
+                            <option value="2개">2개</option>
+                            <option value="1개">1개</option>
+                            <option value="3개 이상">3개 이상</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">상태</label>
+                    <select id="edit-status" class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm">
+                        <option value="renting">대여 중</option>
+                        <option value="returned">반납 완료</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl">취소</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl">저장하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Sync/Transfer Modal (Export/Import JSON) -->
+    <div id="sync-modal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100">
+            <h3 class="text-base font-bold text-slate-800 mb-2">📲 휴대폰 ↔ PC 데이터 동기화/이전</h3>
+            <p class="text-xs text-slate-500 mb-4">
+                휴대폰의 대여 내역 코드를 복사하여 PC 관리자 화면에 붙여넣으면 PC에서도 똑같이 모든 기록이 표시됩니다.
+            </p>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">내보내기 (데이터 코드 복사)</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="sync-export-code" readonly class="flex-1 px-3 py-2 bg-slate-100 border text-xs rounded-xl font-mono text-slate-600">
+                        <button onclick="copySyncCode()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl whitespace-nowrap">코드 복사</button>
+                    </div>
+                </div>
+                <hr class="border-slate-100">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">가져오기 (다른 기기에서 복사해온 코드 붙여넣기)</label>
+                    <textarea id="sync-import-code" rows="3" placeholder="여기에 복사한 백업 코드를 붙여넣으세요..." class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-xs font-mono"></textarea>
+                    <button onclick="importSyncCode()" class="w-full mt-2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl">데이터 병합 및 적용하기</button>
+                </div>
+            </div>
+            <div class="mt-4 text-right">
+                <button onclick="closeSyncModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs sm:text-sm font-medium px-5 py-3 rounded-2xl shadow-xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 z-50 flex items-center gap-2">
+        <span id="toast-message">알림 메시지</span>
+    </div>
+
+    <script>
+        // Data Store key
+        const STORAGE_KEY = 'table_tennis_rentals_v2';
+        
+        // Application State
+        let rentals = [];
+        let isAdminLoggedIn = false;
+        let currentFilter = 'all';
+
+        // Initialization
+        window.onload = function() {
+            loadRentals();
+            renderAll();
+        };
+
+        // Load data from LocalStorage (Guarantees no data loss on refresh)
+        function loadRentals() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    rentals = JSON.parse(stored);
+                } else {
+                    rentals = [];
+                }
+            } catch (e) {
+                console.error("로컬 저장소 로드 실패:", e);
+                rentals = [];
+            }
         }
 
-        const now = new Date();
-        const timeString = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        // Save data to LocalStorage
+        function saveRentals() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(rentals));
+            } catch (e) {
+                console.error("로컬 저장소 저장 실패:", e);
+                showToast("⚠️ 저장 공간 부족으로 저장이 되지 않았습니다.");
+            }
+        }
 
-        try {
-            await addDoc(rentalsRef, {
+        // Handle Add Rental
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const dong = document.getElementById('dong').value.trim();
+            const ho = document.getElementById('ho').value.trim();
+            const racket = document.getElementById('racket').value;
+            const ball = document.getElementById('ball').value;
+
+            if (!dong || !ho) {
+                showToast('동과 호수를 입력해 주세요.');
+                return;
+            }
+
+            const now = new Date();
+            const timeString = `${now.getMonth() + 1}/${now.getDate()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+            const newRental = {
+                id: 'rental_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
                 dong: dong,
                 ho: ho,
                 racket: racket,
@@ -136,333 +347,386 @@
                 returnTime: null,
                 isReturned: false,
                 createdAt: Date.now()
-            });
+            };
+
+            rentals.unshift(newRental);
+            saveRentals();
+            renderAll();
 
             document.getElementById('dong').value = '';
             document.getElementById('ho').value = '';
-            alert(`${dong}동 ${ho}호 대여가 등록되었습니다.`);
-        } catch (e) {
-            alert("등록 실패: " + e.message);
+            showToast(`✅ ${dong}동 ${ho}호 대여가 정상 등록되었습니다.`);
         }
-      };
 
-      // 2. 실시간 반납 처리 함수
-      window.returnItem = async function(id) {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        // Return item
+        function returnRental(id) {
+            const item = rentals.find(r => r.id === id);
+            if (!item) return;
 
-        try {
-            const itemDoc = doc(db, "tableTennisRentals", id);
-            await updateDoc(itemDoc, {
-                isReturned: true,
-                returnTime: timeString
-            });
-        } catch (e) {
-            alert("반납 처리 실패: " + e.message);
+            const now = new Date();
+            const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+            item.isReturned = true;
+            item.returnTime = timeString;
+
+            saveRentals();
+            renderAll();
+            showToast(`🏓 ${item.dong}동 ${item.ho}호 반납 처리가 완료되었습니다.`);
         }
-      };
 
-      // 3. 관리자 로그인 (비밀번호: 0801)
-      window.checkAdmin = function() {
-        const pw = document.getElementById('admin-pw').value;
-        if (pw === "0801") {
-            isAdminLoggedIn = true;
-            document.getElementById('admin-auth-box').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'block';
-            document.getElementById('main-container').classList.add('admin-mode'); // 넓은 화면 적용
-            renderAdminTable();
-        } else {
-            alert('비밀번호가 올바르지 않습니다.');
-            document.getElementById('admin-pw').value = '';
+        // Open Edit Modal
+        function openEditModal(id) {
+            const item = rentals.find(r => r.id === id);
+            if (!item) return;
+
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('edit-dong').value = item.dong;
+            document.getElementById('edit-ho').value = item.ho;
+            document.getElementById('edit-racket').value = item.racket;
+            document.getElementById('edit-ball').value = item.ball;
+            document.getElementById('edit-status').value = item.isReturned ? 'returned' : 'renting';
+
+            document.getElementById('edit-modal').classList.remove('hidden');
         }
-      };
 
-      // 4. 관리자 로그아웃
-      window.logoutAdmin = function() {
-        isAdminLoggedIn = false;
-        document.getElementById('admin-panel').style.display = 'none';
-        document.getElementById('admin-auth-box').style.display = 'flex';
-        document.getElementById('admin-pw').value = '';
-        document.getElementById('main-container').classList.remove('admin-mode'); // 기본 화면 크기로 복원
-      };
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
 
-      // 5. 관리자 필터 변경 함수
-      window.setAdminFilter = function(filterType) {
-        currentFilter = filterType;
-        document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
-        document.getElementById(`tab-${filterType}`).classList.add('active');
-        renderAdminTable();
-      };
+        function handleEditFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const item = rentals.find(r => r.id === id);
+            if (!item) return;
 
-      // 6. 관리자 수정 처리 함수
-      window.editRentalItem = async function(id) {
-        const target = allRentalsData.find(item => item.id === id);
-        if (!target) return;
+            const isReturned = document.getElementById('edit-status').value === 'returned';
+            
+            item.dong = document.getElementById('edit-dong').value.trim();
+            item.ho = document.getElementById('edit-ho').value.trim();
+            item.racket = document.getElementById('edit-racket').value;
+            item.ball = document.getElementById('edit-ball').value;
 
-        const newRacket = prompt("라켓 수량을 수정하세요:", target.racket);
-        if (newRacket === null) return;
-
-        const newBall = prompt("탁구공 수량을 수정하세요:", target.ball);
-        if (newBall === null) return;
-
-        const toggleReturn = confirm(`현재 상태: ${target.isReturned ? '반납 완료' : '대여 중'}\n상태를 변경하시겠습니까?`);
-        let isReturned = target.isReturned;
-        let returnTime = target.returnTime;
-
-        if (toggleReturn) {
-            isReturned = !isReturned;
-            if (isReturned && !returnTime) {
+            if (isReturned && !item.isReturned) {
                 const now = new Date();
-                returnTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                item.returnTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
             } else if (!isReturned) {
-                returnTime = null;
+                item.returnTime = null;
             }
+            item.isReturned = isReturned;
+
+            saveRentals();
+            renderAll();
+            closeEditModal();
+            showToast("✏️ 내역이 정상 수정되었습니다.");
         }
 
-        try {
-            const itemDoc = doc(db, "tableTennisRentals", id);
-            await updateDoc(itemDoc, {
-                racket: newRacket,
-                ball: newBall,
-                isReturned: isReturned,
-                returnTime: returnTime
-            });
-            alert("수정되었습니다.");
-        } catch (e) {
-            alert("수정 실패: " + e.message);
-        }
-      };
+        // Delete item with custom confirm modal
+        function deleteRental(id) {
+            const item = rentals.find(r => r.id === id);
+            if (!item) return;
 
-      // 7. 관리자 삭제 처리 함수
-      window.deleteRentalItem = async function(id) {
-        if (confirm("정말 이 대여 내역을 삭제하시겠습니까?")) {
-            try {
-                const itemDoc = doc(db, "tableTennisRentals", id);
-                await deleteDoc(itemDoc);
-                alert("삭제되었습니다.");
-            } catch (e) {
-                alert("삭제 실패: " + e.message);
-            }
-        }
-      };
-
-      // 8. 엑셀(CSV) 다운로드 함수
-      window.downloadExcel = function() {
-        if (allRentalsData.length === 0) {
-            alert("다운로드할 데이터가 없습니다.");
-            return;
-        }
-
-        let csvContent = "\uFEFF동,호수,라켓,탁구공,대여시각,반납시각,상태\n";
-        allRentalsData.forEach(item => {
-            const status = item.isReturned ? "반납 완료" : "대여 중";
-            const retTime = item.returnTime ? item.returnTime : "-";
-            csvContent += `"${item.dong}","${item.ho}","${item.racket}","${item.ball}","${item.borrowTime}","${retTime}","${status}"\n`;
-        });
-
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        const today = new Date().toISOString().slice(0,10);
-        
-        link.setAttribute("href", url);
-        link.setAttribute("download", `탁구용품_대여내역_${today}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      };
-
-      // 9. 관리자 내역 테이블 렌더링
-      window.renderAdminTable = function() {
-        if (!isAdminLoggedIn) return;
-
-        const tbody = document.getElementById('admin-list-body');
-        const summary = document.getElementById('admin-summary');
-        const searchKeyword = document.getElementById('admin-search').value.trim();
-        tbody.innerHTML = '';
-
-        const totalCount = allRentalsData.length;
-        const returnedCount = allRentalsData.filter(item => item.isReturned).length;
-        const rentingCount = totalCount - returnedCount;
-
-        summary.innerHTML = `총 누적: ${totalCount}건 | 대여 중: <span style="color:#e67e22;">${rentingCount}건</span> | 반납 완료: <span style="color:#27ae60;">${returnedCount}건</span>`;
-
-        // 탭 필터 적용
-        let filtered = allRentalsData.filter(item => {
-            if (currentFilter === 'renting') return !item.isReturned;
-            if (currentFilter === 'returned') return item.isReturned;
-            return true;
-        });
-
-        // 검색 필터 적용 (동 또는 호수)
-        if (searchKeyword !== '') {
-            filtered = filtered.filter(item => 
-                item.dong.includes(searchKeyword) || item.ho.includes(searchKeyword)
+            showCustomConfirm(
+                "대여 내역 삭제",
+                `${item.dong}동 ${item.ho}호 내역을 삭제하시겠습니까?`,
+                () => {
+                    rentals = rentals.filter(r => r.id !== id);
+                    saveRentals();
+                    renderAll();
+                    showToast("🗑️ 삭제되었습니다.");
+                }
             );
         }
 
-        if (filtered.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:15px; color:#7f8c8d;">검색/필터 조건에 일치하는 내역이 없습니다.</td></tr>';
-            return;
+        // Reset all data
+        function confirmResetAll() {
+            showCustomConfirm(
+                "⚠️ 전체 초기화 경고",
+                "모든 대여 내역을 삭제하시겠습니까? 이 작업은 복구할 수 없습니다.",
+                () => {
+                    rentals = [];
+                    saveRentals();
+                    renderAll();
+                    showToast("🧹 전체 데이터가 초기화되었습니다.");
+                }
+            );
         }
 
-        filtered.forEach(item => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><strong>${item.dong}동 ${item.ho}호</strong></td>
-                <td>라켓: ${item.racket} / 공: ${item.ball}</td>
-                <td>${item.borrowTime}</td>
-                <td>${item.returnTime ? item.returnTime : '-'}</td>
-                <td class="${item.isReturned ? 'status-done' : 'status-renting'}">
-                    ${item.isReturned ? '반납완료' : '대여중'}
-                </td>
-                <td>
-                    <button class="btn-action-edit" onclick="editRentalItem('${item.id}')">수정</button>
-                    <button class="btn-action-del" onclick="deleteRentalItem('${item.id}')">삭제</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-      };
-
-      // 10. 데이터 실시간 감지 및 화면 자동 업데이트
-      const q = query(rentalsRef, orderBy("createdAt", "desc"));
-      onSnapshot(q, (snapshot) => {
-        const listContainer = document.getElementById('rental-list');
-        listContainer.innerHTML = '';
-
-        allRentalsData = [];
-
-        if (snapshot.empty) {
-            listContainer.innerHTML = '<p style="text-align:center; color:#95a5a6; font-size:14px;">현재 대여 내역이 없습니다.</p>';
-            if (isAdminLoggedIn) renderAdminTable();
-            return;
+        // Admin Auth
+        function checkAdmin() {
+            const pw = document.getElementById('admin-pw').value.trim();
+            if (pw === "0801") {
+                isAdminLoggedIn = true;
+                document.getElementById('admin-auth-box').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                document.getElementById('btn-logout').classList.remove('hidden');
+                renderAdminTable();
+                showToast("🔓 관리자 모드로 접속되었습니다.");
+            } else {
+                showToast("❌ 비밀번호가 올바르지 않습니다.");
+                document.getElementById('admin-pw').value = '';
+            }
         }
 
-        snapshot.forEach((docSnapshot) => {
-            const item = docSnapshot.data();
-            const id = docSnapshot.id;
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('admin-panel').classList.add('hidden');
+            document.getElementById('admin-auth-box').classList.remove('hidden');
+            document.getElementById('btn-logout').classList.add('hidden');
+            document.getElementById('admin-pw').value = '';
+            showToast("🔒 관리자 모드가 로그아웃되었습니다.");
+        }
 
-            allRentalsData.push({ id, ...item });
-
-            const div = document.createElement('div');
-            div.className = `rental-item ${item.isReturned ? 'returned' : ''}`;
-
-            let buttonOrStatus = item.isReturned 
-                ? `<span class="badge-returned">반납 완료 (${item.returnTime})</span>`
-                : `<button class="btn-return" onclick="returnItem('${id}')">반납하기</button>`;
-
-            div.innerHTML = `
-                <div class="rental-info">
-                    <strong>${item.dong}동 ${item.ho}호</strong><br>
-                    라켓: ${item.racket} / 공: ${item.ball}<br>
-                    <span class="time">대여: ${item.borrowTime}</span>
-                </div>
-                <div>${buttonOrStatus}</div>
-            `;
-            listContainer.appendChild(div);
-        });
-
-        if (isAdminLoggedIn) {
+        function setAdminFilter(filterType) {
+            currentFilter = filterType;
+            ['all', 'renting', 'returned'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === filterType) {
+                    btn.className = "flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg text-amber-400 bg-slate-800 transition-all";
+                } else {
+                    btn.className = "flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all";
+                }
+            });
             renderAdminTable();
         }
-      });
-    </script>
-</head>
-<body>
 
-<div class="container" id="main-container">
-    <h2>🏓 탁구 용품 대여 대장</h2>
-    
-    <div id="rental-form">
-        <div class="row">
-            <div class="form-group">
-                <label for="dong">동</label>
-                <input type="text" id="dong" placeholder="예: 101" inputmode="numeric">
-            </div>
-            <div class="form-group">
-                <label for="ho">호수</label>
-                <input type="text" id="ho" placeholder="예: 502" inputmode="numeric">
-            </div>
-        </div>
+        // Render functions
+        function renderAll() {
+            renderUserList();
+            if (isAdminLoggedIn) {
+                renderAdminTable();
+            }
+        }
 
-        <div class="row">
-            <div class="form-group">
-                <label for="racket">라켓 수량</label>
-                <select id="racket">
-                    <option value="2개 (1세트)">2개 (1세트)</option>
-                    <option value="4개 (2세트)">4개 (2세트)</option>
-                    <option value="1개">1개</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="ball">탁구공 수량</label>
-                <select id="ball">
-                    <option value="2개">2개</option>
-                    <option value="1개">1개</option>
-                    <option value="3개 이상">3개 이상</option>
-                </select>
-            </div>
-        </div>
-
-        <button class="btn-submit" onclick="addRental()">대여 작성 완료</button>
-    </div>
-
-    <hr>
-
-    <div class="list-title">📋 현재 실시간 대여 현황</div>
-    <div id="rental-list">데이터 불러오는 중...</div>
-
-    <!-- 관리자 모드 섹션 -->
-    <div class="admin-section">
-        <div class="list-title">🔒 관리자 모드</div>
-        <div class="admin-auth-box" id="admin-auth-box">
-            <!-- 비밀번호 암시문구 삭제 완료 -->
-            <input type="password" id="admin-pw" placeholder="관리자 비밀번호 입력" maxlength="20">
-            <button class="btn-admin" onclick="checkAdmin()">로그인</button>
-        </div>
-
-        <div class="admin-panel" id="admin-panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <span style="font-weight: bold; color: #2c3e50; font-size: 15px;">📊 전체 대여/반납 데이터 관리판</span>
-                <!-- 관리자 전용 로그아웃 버튼 -->
-                <button class="btn-logout" onclick="logoutAdmin()">🔒 로그아웃</button>
-            </div>
+        function renderUserList() {
+            const container = document.getElementById('rental-list');
+            const activeBadge = document.getElementById('active-count-badge');
             
-            <div class="admin-summary" id="admin-summary"></div>
+            const activeRentals = rentals.filter(r => !r.isReturned);
+            activeBadge.textContent = `${activeRentals.length}건 대여 중`;
 
-            <!-- 관리자 컨트롤 (탭 필터, 검색, 엑셀 다운로드) -->
-            <div class="admin-controls">
-                <div class="admin-tabs">
-                    <button class="admin-tab active" id="tab-all" onclick="setAdminFilter('all')">전체보기</button>
-                    <button class="admin-tab" id="tab-renting" onclick="setAdminFilter('renting')">대여 중</button>
-                    <button class="admin-tab" id="tab-returned" onclick="setAdminFilter('returned')">반납 완료</button>
+            if (rentals.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-sm">
+                        등록된 대여 내역이 없습니다.
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = rentals.map(item => `
+                <div class="flex items-center justify-between p-3.5 rounded-xl border transition-all ${
+                    item.isReturned 
+                        ? 'bg-slate-50 border-slate-200 text-slate-400' 
+                        : 'bg-white border-slate-200 shadow-sm text-slate-800'
+                }">
+                    <div>
+                        <div class="font-bold text-base flex items-center gap-2">
+                            <span>${item.dong}동 ${item.ho}호</span>
+                            ${item.isReturned ? '<span class="text-xs font-semibold px-2 py-0.5 bg-slate-200 text-slate-600 rounded">반납완료</span>' : ''}
+                        </div>
+                        <div class="text-xs text-slate-500 mt-0.5">
+                            라켓: ${item.racket} / 공: ${item.ball}
+                        </div>
+                        <div class="text-[11px] text-slate-400 mt-1">
+                            대여: ${item.borrowTime} ${item.returnTime ? `| 반납: ${item.returnTime}` : ''}
+                        </div>
+                    </div>
+                    <div>
+                        ${!item.isReturned 
+                            ? `<button onclick="returnRental('${item.id}')" class="px-3.5 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow-sm transition-all">
+                                반납하기
+                               </button>` 
+                            : `<span class="text-xs text-slate-400 font-medium px-2 py-1">완료</span>`
+                        }
+                    </div>
                 </div>
-                <div class="admin-search-box">
-                    <input type="text" id="admin-search" placeholder="동/호수 검색 (예: 101)" oninput="renderAdminTable()">
-                    <button class="btn-excel" onclick="downloadExcel()">📊 엑셀 다운로드</button>
-                </div>
-            </div>
+            `).join('');
+        }
 
-            <div style="overflow-x: auto;">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>호실</th>
-                            <th>대여 품목</th>
-                            <th>대여시각</th>
-                            <th>반납시각</th>
-                            <th>상태</th>
-                            <th>관리</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-list-body">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+        function renderAdminTable() {
+            if (!isAdminLoggedIn) return;
 
+            const tbody = document.getElementById('admin-table-body');
+            const searchKeyword = document.getElementById('admin-search').value.trim();
+
+            // Stats
+            const total = rentals.length;
+            const returned = rentals.filter(r => r.isReturned).length;
+            const renting = total - returned;
+
+            document.getElementById('stat-total').textContent = `${total}건`;
+            document.getElementById('stat-renting').textContent = `${renting}건`;
+            document.getElementById('stat-returned').textContent = `${returned}건`;
+
+            // Filter
+            let filtered = rentals.filter(r => {
+                if (currentFilter === 'renting') return !r.isReturned;
+                if (currentFilter === 'returned') return r.isReturned;
+                return true;
+            });
+
+            // Search
+            if (searchKeyword !== '') {
+                filtered = filtered.filter(r => 
+                    r.dong.includes(searchKeyword) || r.ho.includes(searchKeyword)
+                );
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">일치하는 대여 내역이 없습니다.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(item => `
+                <tr class="hover:bg-slate-800/50 transition-colors">
+                    <td class="p-3 text-center font-bold text-white">${item.dong}동 ${item.ho}호</td>
+                    <td class="p-3">라켓: ${item.racket} / 공: ${item.ball}</td>
+                    <td class="p-3 text-slate-400">${item.borrowTime}</td>
+                    <td class="p-3 text-slate-400">${item.returnTime || '-'}</td>
+                    <td class="p-3 text-center">
+                        <span class="px-2 py-0.5 text-[11px] font-bold rounded-full ${
+                            item.isReturned 
+                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                                : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        }">
+                            ${item.isReturned ? '반납완료' : '대여중'}
+                        </span>
+                    </td>
+                    <td class="p-3 text-center">
+                        <div class="flex items-center justify-center gap-1">
+                            <button onclick="openEditModal('${item.id}')" class="px-2 py-1 bg-blue-600/80 hover:bg-blue-600 text-white text-[11px] font-semibold rounded">수정</button>
+                            <button onclick="deleteRental('${item.id}')" class="px-2 py-1 bg-rose-600/80 hover:bg-rose-600 text-white text-[11px] font-semibold rounded">삭제</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // CSV Excel Download
+        function downloadExcel() {
+            if (rentals.length === 0) {
+                showToast("다운로드할 데이터가 없습니다.");
+                return;
+            }
+
+            let csvContent = "\uFEFF동,호수,라켓,탁구공,대여시각,반납시각,상태\n";
+            rentals.forEach(item => {
+                const status = item.isReturned ? "반납 완료" : "대여 중";
+                const retTime = item.returnTime ? item.returnTime : "-";
+                csvContent += `"${item.dong}","${item.ho}","${item.racket}","${item.ball}","${item.borrowTime}","${retTime}","${status}"\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            const today = new Date().toISOString().slice(0, 10);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `탁구용품_대여내역_${today}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("📊 엑셀 CSV 파일이 다운로드되었습니다.");
+        }
+
+        // Data Sync & Export/Import Code Modal Logic
+        function openSyncModal() {
+            const jsonString = btoa(encodeURIComponent(JSON.stringify(rentals)));
+            document.getElementById('sync-export-code').value = jsonString;
+            document.getElementById('sync-import-code').value = '';
+            document.getElementById('sync-modal').classList.remove('hidden');
+        }
+
+        function closeSyncModal() {
+            document.getElementById('sync-modal').classList.add('hidden');
+        }
+
+        function copySyncCode() {
+            const codeInput = document.getElementById('sync-export-code');
+            codeInput.select();
+            document.execCommand('copy');
+            showToast("📋 동기화 코드가 클립보드에 복사되었습니다!");
+        }
+
+        function importSyncCode() {
+            const input = document.getElementById('sync-import-code').value.trim();
+            if (!input) {
+                showToast("붙여넣을 코드를 입력해주세요.");
+                return;
+            }
+
+            try {
+                const jsonText = decodeURIComponent(atob(input));
+                const importedData = JSON.parse(jsonText);
+                if (Array.isArray(importedData)) {
+                    // Merge based on unique ID
+                    const existingIds = new Set(rentals.map(r => r.id));
+                    let addedCount = 0;
+
+                    importedData.forEach(item => {
+                        if (!existingIds.has(item.id)) {
+                            rentals.push(item);
+                            addedCount++;
+                        }
+                    });
+
+                    rentals.sort((a, b) => b.createdAt - a.createdAt);
+                    saveRentals();
+                    renderAll();
+                    closeSyncModal();
+                    showToast(`✅ ${addedCount}건의 신규 내역이 성공적으로 병합되었습니다.`);
+                } else {
+                    showToast("올바르지 않은 코드 형식입니다.");
+                }
+            } catch (e) {
+                showToast("❌ 코드 해독에 실패했습니다. 올바른 코드를 입력해 주세요.");
+            }
+        }
+
+        // Custom Confirm Dialog helper
+        function showCustomConfirm(title, message, onOk) {
+            document.getElementById('confirm-modal-title').textContent = title;
+            document.getElementById('confirm-modal-message').textContent = message;
+            
+            const modal = document.getElementById('confirm-modal');
+            const btnOk = document.getElementById('confirm-modal-ok');
+            const btnCancel = document.getElementById('confirm-modal-cancel');
+
+            modal.classList.remove('hidden');
+
+            const handleOk = () => {
+                cleanup();
+                onOk();
+            };
+
+            const handleCancel = () => {
+                cleanup();
+            };
+
+            const cleanup = () => {
+                modal.classList.add('hidden');
+                btnOk.removeEventListener('click', handleOk);
+                btnCancel.removeEventListener('click', handleCancel);
+            };
+
+            btnOk.addEventListener('click', handleOk);
+            btnCancel.addEventListener('click', handleCancel);
+        }
+
+        // Toast Notification helper
+        let toastTimeout;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = msg;
+
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
