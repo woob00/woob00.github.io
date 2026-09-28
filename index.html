@@ -25,6 +25,9 @@
                 </svg>
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">🏓 탁구 용품 대여 대장</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1" id="storage-status-text">
+                📱 데이터가 이 기기(브라우저)에 안전하게 자동 저장됩니다.
+            </p>
         </header>
 
         <!-- Rental Form Card -->
@@ -97,7 +100,7 @@
                     <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                     </svg>
-                    <h2 class="text-base font-bold text-slate-100">통합 관리자 모드</h2>
+                    <h2 class="text-base font-bold text-slate-100">🔒 모바일 & PC 통합 관리자 모드</h2>
                 </div>
                 <button id="btn-logout" onclick="logoutAdmin()" class="hidden px-3 py-1 bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-semibold rounded-lg transition-all">
                     로그아웃
@@ -149,7 +152,7 @@
                             📊 CSV 엑셀
                         </button>
                         <button onclick="openSyncModal()" class="flex-1 sm:flex-none px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1 whitespace-nowrap">
-                            📲 PC/모바일 이동
+                            📲 PC/모바일 데이터 합치기
                         </button>
                     </div>
                 </div>
@@ -180,14 +183,14 @@
 
                 <!-- Admin Footer Actions -->
                 <div class="mt-4 flex justify-between items-center text-xs text-slate-400">
-                    <span>💡 기기 간 내역 이동은 'PC/모바일 이동' 버튼을 사용하세요.</span>
+                    <span>💡 기기 간 내역 합치기는 '데이터 합치기' 버튼을 이용하세요.</span>
                     <button onclick="confirmResetAll()" class="text-rose-400 hover:text-rose-300 underline">전체 데이터 초기화</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Custom Modal Dialogs (No alert or confirm used) -->
+    <!-- Custom Modal Dialogs -->
     
     <!-- Confirm Modal -->
     <div id="confirm-modal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -250,30 +253,53 @@
         </div>
     </div>
 
-    <!-- Data Sync/Transfer Modal (Export/Import JSON) -->
+    <!-- Data Sync/Transfer Modal (Code & File Support) -->
     <div id="sync-modal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100">
-            <h3 class="text-base font-bold text-slate-800 mb-2">📲 휴대폰 ↔ PC 데이터 동기화/이전</h3>
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-base font-bold text-slate-800 mb-1">📲 휴대폰 ↔ PC 데이터 통합 및 합치기</h3>
             <p class="text-xs text-slate-500 mb-4">
-                휴대폰의 대여 내역 코드를 복사하여 PC 관리자 화면에 붙여넣으면 PC에서도 똑같이 모든 기록이 표시됩니다.
+                서로 다른 휴대폰이나 PC에 기록된 대여 내역을 하나로 통합할 수 있습니다. 기존 내역은 유지되며 새로운 내역이 안전하게 합쳐집니다.
             </p>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">내보내기 (데이터 코드 복사)</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="sync-export-code" readonly class="flex-1 px-3 py-2 bg-slate-100 border text-xs rounded-xl font-mono text-slate-600">
-                        <button onclick="copySyncCode()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl whitespace-nowrap">코드 복사</button>
-                    </div>
+
+            <!-- Option A: File Import/Export (Recommended for messaging apps) -->
+            <div class="bg-indigo-50/70 border border-indigo-100 rounded-xl p-3.5 mb-4 space-y-3">
+                <div class="font-bold text-xs text-indigo-900 flex items-center gap-1.5">
+                    <span>📁 방법 1: 파일로 전달하고 합치기 (추천)</span>
                 </div>
-                <hr class="border-slate-100">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">가져오기 (다른 기기에서 복사해온 코드 붙여넣기)</label>
-                    <textarea id="sync-import-code" rows="3" placeholder="여기에 복사한 백업 코드를 붙여넣으세요..." class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-xs font-mono"></textarea>
-                    <button onclick="importSyncCode()" class="w-full mt-2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl">데이터 병합 및 적용하기</button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="downloadJsonFile()" class="py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all text-center">
+                        내 내역 파일 저장 (.json)
+                    </button>
+                    <label class="py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all text-center cursor-pointer">
+                        타 기기 파일 가져오기
+                        <input type="file" id="json-file-input" accept=".json" class="hidden" onchange="handleFileUpload(event)">
+                    </label>
                 </div>
             </div>
-            <div class="mt-4 text-right">
-                <button onclick="closeSyncModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl">닫기</button>
+
+            <!-- Option B: Text Code Copy/Paste -->
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3">
+                <div class="font-bold text-xs text-slate-800">
+                    <span>🔤 방법 2: 복사한 코드 문자열로 합치기</span>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">내 기기 내역 코드</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="sync-export-code" readonly class="flex-1 px-3 py-1.5 bg-white border text-xs rounded-xl font-mono text-slate-600 truncate">
+                        <button onclick="copySyncCode()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl whitespace-nowrap">복사</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">다른 기기에서 복사해온 코드 붙여넣기</label>
+                    <textarea id="sync-import-code" rows="3" placeholder="카카오톡이나 문자로 전달받은 코드를 그대로 붙여넣으세요..." class="w-full px-3 py-2 bg-white border rounded-xl text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20"></textarea>
+                    <button onclick="importSyncCodeFromText()" class="w-full mt-2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm">
+                        코드 내용 합치기 및 적용
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-5 text-right">
+                <button onclick="closeSyncModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-xl">닫기</button>
             </div>
         </div>
     </div>
@@ -298,7 +324,7 @@
             renderAll();
         };
 
-        // Load data from LocalStorage (Guarantees no data loss on refresh)
+        // Load data from LocalStorage
         function loadRentals() {
             try {
                 const stored = localStorage.getItem(STORAGE_KEY);
@@ -340,7 +366,7 @@
             const timeString = `${now.getMonth() + 1}/${now.getDate()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
             const newRental = {
-                id: 'rental_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                id: 'rental_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                 dong: dong,
                 ho: ho,
                 racket: racket,
@@ -667,10 +693,17 @@
             showToast("📊 엑셀 CSV 파일이 다운로드되었습니다.");
         }
 
-        // Data Sync & Export/Import Code Modal Logic
+        // --- Data Sync & Cross-Device Merge Logic ---
+
         function openSyncModal() {
-            const jsonString = btoa(encodeURIComponent(JSON.stringify(rentals)));
-            document.getElementById('sync-export-code').value = jsonString;
+            // Encode rentals into string code
+            try {
+                const jsonStr = JSON.stringify(rentals);
+                const encodedCode = btoa(encodeURIComponent(jsonStr));
+                document.getElementById('sync-export-code').value = encodedCode;
+            } catch (e) {
+                console.error("인코딩 오류:", e);
+            }
             document.getElementById('sync-import-code').value = '';
             document.getElementById('sync-modal').classList.remove('hidden');
         }
@@ -683,41 +716,120 @@
             const codeInput = document.getElementById('sync-export-code');
             codeInput.select();
             document.execCommand('copy');
-            showToast("📋 동기화 코드가 클립보드에 복사되었습니다!");
+            showToast("📋 동기화 코드가 복사되었습니다!");
         }
 
-        function importSyncCode() {
-            const input = document.getElementById('sync-import-code').value.trim();
-            if (!input) {
+        // Export JSON File
+        function downloadJsonFile() {
+            if (rentals.length === 0) {
+                showToast("내보낼 대여 데이터가 없습니다.");
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(rentals, null, 2));
+            const dlAnchor = document.createElement('a');
+            const dateStr = new Date().toISOString().slice(0, 10);
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `탁구대여백업_${dateStr}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+            showToast("📁 백업 파일이 다운로드되었습니다.");
+        }
+
+        // Import JSON File
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsedData = JSON.parse(e.target.result);
+                    mergeRentalData(parsedData);
+                } catch (err) {
+                    showToast("❌ 유효하지 않은 백업 파일 형식입니다.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input
+        }
+
+        // Import text code (handles whitespace & encoding fixes from messaging apps)
+        function importSyncCodeFromText() {
+            let rawInput = document.getElementById('sync-import-code').value.trim();
+            if (!rawInput) {
                 showToast("붙여넣을 코드를 입력해주세요.");
                 return;
             }
 
+            // Clean up white spaces, newlines added by messaging platforms
+            rawInput = rawInput.replace(/\s+/g, '');
+
             try {
-                const jsonText = decodeURIComponent(atob(input));
-                const importedData = JSON.parse(jsonText);
-                if (Array.isArray(importedData)) {
-                    // Merge based on unique ID
-                    const existingIds = new Set(rentals.map(r => r.id));
-                    let addedCount = 0;
+                let parsedData = null;
+                
+                // Try Base64 decoding first
+                try {
+                    const jsonText = decodeURIComponent(atob(rawInput));
+                    parsedData = JSON.parse(jsonText);
+                } catch (e1) {
+                    // Fallback try raw JSON string parse
+                    parsedData = JSON.parse(rawInput);
+                }
 
-                    importedData.forEach(item => {
-                        if (!existingIds.has(item.id)) {
-                            rentals.push(item);
-                            addedCount++;
-                        }
-                    });
-
-                    rentals.sort((a, b) => b.createdAt - a.createdAt);
-                    saveRentals();
-                    renderAll();
-                    closeSyncModal();
-                    showToast(`✅ ${addedCount}건의 신규 내역이 성공적으로 병합되었습니다.`);
+                if (Array.isArray(parsedData)) {
+                    mergeRentalData(parsedData);
                 } else {
-                    showToast("올바르지 않은 코드 형식입니다.");
+                    showToast("❌ 올바른 대여 내역 데이터가 아닙니다.");
                 }
             } catch (e) {
-                showToast("❌ 코드 해독에 실패했습니다. 올바른 코드를 입력해 주세요.");
+                showToast("❌ 코드 해석에 실패했습니다. 올바른 코드를 입력해주세요.");
+            }
+        }
+
+        // Universal Merge Logic
+        function mergeRentalData(importedData) {
+            if (!Array.isArray(importedData)) {
+                showToast("❌ 올바르지 않은 데이터 형식입니다.");
+                return;
+            }
+
+            let addedCount = 0;
+            let updatedCount = 0;
+
+            const existingMap = new Map();
+            rentals.forEach(r => existingMap.set(r.id, r));
+
+            importedData.forEach(item => {
+                if (!item || !item.id) return;
+
+                if (existingMap.has(item.id)) {
+                    // Update return status if imported item has return info
+                    const existing = existingMap.get(item.id);
+                    if (item.isReturned && !existing.isReturned) {
+                        existing.isReturned = true;
+                        existing.returnTime = item.returnTime || existing.returnTime;
+                        updatedCount++;
+                    }
+                } else {
+                    // New item addition
+                    rentals.push(item);
+                    existingMap.set(item.id, item);
+                    addedCount++;
+                }
+            });
+
+            // Sort by creation time descending
+            rentals.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+            saveRentals();
+            renderAll();
+            closeSyncModal();
+
+            if (addedCount === 0 && updatedCount === 0) {
+                showToast("ℹ️ 이미 모든 내역이 최신 상태로 합쳐져 있습니다.");
+            } else {
+                showToast(`✅ ${addedCount}건 추가, ${updatedCount}건 상태 업데이트가 완료되었습니다!`);
             }
         }
 
