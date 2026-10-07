@@ -4,54 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>탁구 용품 대여 대장</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans KR', sans-serif; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen pb-12">
 
-    <div class="max-w-4xl mx-auto px-4 py-6 transition-all duration-300" id="app-container">
-        
-        <!-- Header -->
+    <div class="max-w-4xl mx-auto px-4 py-6" id="app-container">
+
         <header class="text-center mb-6">
-            <div class="inline-flex items-center justify-center w-14 h-14 bg-emerald-500 text-white rounded-2xl shadow-lg mb-3">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-            </div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">🏓 탁구 용품 대여 대장</h1>
+            <div class="inline-flex items-center justify-center w-14 h-14 bg-emerald-500 text-white rounded-2xl shadow-lg mb-3 text-3xl">🏓</div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">탁구 용품 대여 대장</h1>
         </header>
 
-        <!-- Rental Form Card -->
+        <!-- 신규 대여 -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 sm:p-6 mb-6">
             <h2 class="text-base font-bold text-slate-700 mb-4 flex items-center gap-2">
                 <span class="w-2 h-4 bg-emerald-500 rounded-full inline-block"></span>
                 신규 대여 등록
             </h2>
-            
+
             <form id="rental-form" onsubmit="handleFormSubmit(event)">
                 <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
                     <div>
                         <label for="dong" class="block text-xs font-semibold text-slate-600 mb-1">동</label>
                         <input type="text" id="dong" placeholder="예: 101" inputmode="numeric" required
-                            class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                            class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
                     </div>
                     <div>
                         <label for="ho" class="block text-xs font-semibold text-slate-600 mb-1">호수</label>
                         <input type="text" id="ho" placeholder="예: 502" inputmode="numeric" required
-                            class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                            class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-5">
                     <div>
                         <label for="racket" class="block text-xs font-semibold text-slate-600 mb-1">라켓 수량</label>
-                        <select id="racket" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                        <select id="racket" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
                             <option value="2개 (1세트)">2개 (1세트)</option>
                             <option value="4개 (2세트)">4개 (2세트)</option>
                             <option value="1개">1개</option>
@@ -59,7 +51,7 @@
                     </div>
                     <div>
                         <label for="ball" class="block text-xs font-semibold text-slate-600 mb-1">탁구공 수량</label>
-                        <select id="ball" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                        <select id="ball" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
                             <option value="2개">2개</option>
                             <option value="1개">1개</option>
                             <option value="3개 이상">3개 이상</option>
@@ -67,13 +59,13 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all text-sm sm:text-base">
+                <button type="submit" id="submit-btn" class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-xl shadow-md text-sm sm:text-base">
                     대여 작성 완료
                 </button>
             </form>
         </div>
 
-        <!-- Current Rentals List Section -->
+        <!-- 현재 대여 현황 -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 sm:p-6 mb-6">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-base font-bold text-slate-700 flex items-center gap-2">
@@ -84,39 +76,28 @@
                     0건 대여 중
                 </span>
             </div>
-
-            <div id="rental-list" class="space-y-3">
-                <!-- Data dynamically inserted here -->
-            </div>
+            <div id="rental-list" class="space-y-3"></div>
         </div>
 
-        <!-- Admin Section Header & Toggle -->
+        <!-- 관리자 -->
         <div class="bg-slate-800 text-white rounded-2xl shadow-md p-5 sm:p-6 border border-slate-700">
             <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                    </svg>
-                    <h2 class="text-base font-bold text-slate-100">🔒 모바일 & PC 통합 관리자 모드</h2>
-                </div>
-                <button id="btn-logout" onclick="logoutAdmin()" class="hidden px-3 py-1 bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-semibold rounded-lg transition-all">
+                <h2 class="text-base font-bold text-slate-100">🔒 관리자 모드</h2>
+                <button id="btn-logout" onclick="logoutAdmin()" class="hidden px-3 py-1 bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-semibold rounded-lg">
                     로그아웃
                 </button>
             </div>
 
-            <!-- Admin Login Auth Box -->
             <div id="admin-auth-box" class="flex gap-2">
-                <input type="password" id="admin-pw" placeholder="관리자 비밀번호" 
+                <input type="password" id="admin-pw" placeholder="관리자 비밀번호"
                     class="flex-1 px-3 py-2 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30">
-                <button onclick="checkAdmin()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm rounded-xl transition-all">
+                <button onclick="checkAdmin()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm rounded-xl">
                     접속
                 </button>
             </div>
 
-            <!-- Admin Panel Content (Hidden by default) -->
             <div id="admin-panel" class="hidden mt-4 pt-4 border-t border-slate-700">
-                
-                <!-- Admin Summary Statistics -->
+
                 <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-4 text-center">
                     <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/60">
                         <div class="text-xs text-slate-400 font-medium mb-1">총 누적</div>
@@ -132,37 +113,29 @@
                     </div>
                 </div>
 
-                <!-- Admin Controls: Filters, Search, CSV Export, Data Backup -->
                 <div class="flex flex-col gap-3 mb-4">
-                    <!-- Tabs -->
                     <div class="flex bg-slate-900 p-1 rounded-xl gap-1 w-full">
-                        <button onclick="setAdminFilter('all')" id="tab-all" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg text-amber-400 bg-slate-800 transition-all">전체</button>
-                        <button onclick="setAdminFilter('renting')" id="tab-renting" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all">대여 중</button>
-                        <button onclick="setAdminFilter('returned')" id="tab-returned" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all">반납 완료</button>
+                        <button onclick="setAdminFilter('all')" id="tab-all" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg text-amber-400 bg-slate-800">전체</button>
+                        <button onclick="setAdminFilter('renting')" id="tab-renting" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg text-slate-400 hover:text-white">대여 중</button>
+                        <button onclick="setAdminFilter('returned')" id="tab-returned" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg text-slate-400 hover:text-white">반납 완료</button>
                     </div>
 
-                    <!-- Search and Export Buttons -->
-                    <div class="flex flex-wrap sm:flex-nowrap gap-2">
-                        <input type="text" id="admin-search" placeholder="동/호수 검색..." oninput="renderAdminTable()" 
+                    <div class="flex gap-2">
+                        <input type="text" id="admin-search" placeholder="동/호수 검색..." oninput="renderAdminTable()"
                             class="flex-1 min-w-[120px] px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none">
-                        <button onclick="downloadExcel()" class="flex-1 sm:flex-none px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1 whitespace-nowrap">
+                        <button onclick="downloadExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl whitespace-nowrap">
                             📊 CSV 엑셀
                         </button>
-                        <button onclick="openSyncModal()" class="flex-1 sm:flex-none px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1 whitespace-nowrap">
-                            📲 PC/모바일 데이터 합치기
-                        </button>
                     </div>
                 </div>
 
-                <!-- Admin Mobile Card List (Visible on Mobile screens) -->
-                <div id="admin-card-list" class="block sm:hidden space-y-2.5">
-                    <!-- Dynamically generated mobile cards -->
-                </div>
+                <!-- 모바일 카드 -->
+                <div id="admin-card-list" class="block sm:hidden space-y-2.5"></div>
 
-                <!-- Admin Table Container (Visible on Desktop/Tablet screens) -->
+                <!-- PC 표 -->
                 <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-700 bg-slate-900/90">
                     <table class="w-full text-left text-xs text-slate-300">
-                        <thead class="bg-slate-800 text-slate-400 font-semibold border-b border-slate-700 uppercase">
+                        <thead class="bg-slate-800 text-slate-400 font-semibold border-b border-slate-700">
                             <tr>
                                 <th class="p-3 text-center">호실</th>
                                 <th class="p-3">대여 품목</th>
@@ -172,26 +145,21 @@
                                 <th class="p-3 text-center">관리</th>
                             </tr>
                         </thead>
-                        <tbody id="admin-table-body" class="divide-y divide-slate-800">
-                            <!-- Dynamically generated rows -->
-                        </tbody>
+                        <tbody id="admin-table-body" class="divide-y divide-slate-800"></tbody>
                     </table>
                 </div>
 
-                <!-- Admin Footer Actions -->
                 <div class="mt-4 flex justify-between items-center text-xs text-slate-400">
-                    <span>💡 기기 간 내역 합치기는 '데이터 합치기' 버튼을 이용하세요.</span>
+                    <span>💡 5초마다 자동으로 갱신됩니다.</span>
                     <button onclick="confirmResetAll()" class="text-rose-400 hover:text-rose-300 underline">전체 데이터 초기화</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Custom Modal Dialogs -->
-    
-    <!-- Confirm Modal -->
-    <div id="confirm-modal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-100">
+    <!-- 확인 창 -->
+    <div id="confirm-modal" class="hidden fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl">
             <h3 class="text-lg font-bold text-slate-800 mb-2" id="confirm-modal-title">확인</h3>
             <p class="text-sm text-slate-600 mb-5 leading-relaxed" id="confirm-modal-message">이 작업을 진행하시겠습니까?</p>
             <div class="flex justify-end gap-2">
@@ -201,9 +169,9 @@
         </div>
     </div>
 
-    <!-- Edit Rental Item Modal -->
-    <div id="edit-modal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
+    <!-- 수정 창 -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
             <h3 class="text-base font-bold text-slate-800 mb-4">✏️ 대여 내역 수정</h3>
             <form id="edit-form" onsubmit="handleEditFormSubmit(event)" class="space-y-4">
                 <input type="hidden" id="edit-id">
@@ -250,167 +218,104 @@
         </div>
     </div>
 
-    <!-- Data Sync/Transfer Modal (Code & File Support) -->
-    <div id="sync-modal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
-            <h3 class="text-base font-bold text-slate-800 mb-1">📲 휴대폰 ↔ PC 데이터 통합 및 합치기</h3>
-            <p class="text-xs text-slate-500 mb-4">
-                서로 다른 휴대폰이나 PC에 기록된 대여 내역을 하나로 통합할 수 있습니다. 기존 내역은 유지되며 새로운 내역이 안전하게 합쳐집니다.
-            </p>
-
-            <!-- Option A: File Import/Export (Recommended for messaging apps) -->
-            <div class="bg-indigo-50/70 border border-indigo-100 rounded-xl p-3.5 mb-4 space-y-3">
-                <div class="font-bold text-xs text-indigo-900 flex items-center gap-1.5">
-                    <span>📁 방법 1: 파일로 전달하고 합치기 (추천)</span>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="downloadJsonFile()" class="py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all text-center">
-                        내 내역 파일 저장 (.json)
-                    </button>
-                    <label class="py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all text-center cursor-pointer">
-                        타 기기 파일 가져오기
-                        <input type="file" id="json-file-input" accept=".json" class="hidden" onchange="handleFileUpload(event)">
-                    </label>
-                </div>
-            </div>
-
-            <!-- Option B: Text Code Copy/Paste -->
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3">
-                <div class="font-bold text-xs text-slate-800">
-                    <span>🔤 방법 2: 복사한 코드 문자열로 합치기</span>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">내 기기 내역 코드</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="sync-export-code" readonly class="flex-1 px-3 py-1.5 bg-white border text-xs rounded-xl font-mono text-slate-600 truncate">
-                        <button onclick="copySyncCode()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl whitespace-nowrap">복사</button>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">다른 기기에서 복사해온 코드 붙여넣기</label>
-                    <textarea id="sync-import-code" rows="3" placeholder="카카오톡이나 문자로 전달받은 코드를 그대로 붙여넣으세요..." class="w-full px-3 py-2 bg-white border rounded-xl text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20"></textarea>
-                    <button onclick="importSyncCodeFromText()" class="w-full mt-2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm">
-                        코드 내용 합치기 및 적용
-                    </button>
-                </div>
-            </div>
-
-            <div class="mt-5 text-right">
-                <button onclick="closeSyncModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-xl">닫기</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification Banner -->
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs sm:text-sm font-medium px-5 py-3 rounded-2xl shadow-xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 z-50 flex items-center gap-2">
+    <!-- 알림 -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs sm:text-sm font-medium px-5 py-3 rounded-2xl shadow-xl transition-all duration-300 opacity-0 pointer-events-none translate-y-4 z-50">
         <span id="toast-message">알림 메시지</span>
     </div>
 
     <script>
-        // Data Store key
-        const STORAGE_KEY = 'table_tennis_rentals_v2';
-        
-        // Application State
+        // ===== 서버 주소 (Netlify Functions) =====
+        const API = '/api/rentals';
+
         let rentals = [];
         let isAdminLoggedIn = false;
+        let adminPw = '';
         let currentFilter = 'all';
 
-        // Initialization
-        window.onload = function() {
+        function two(n) { return String(n).padStart(2, '0'); }
+        function nowHM() { const d = new Date(); return `${two(d.getHours())}:${two(d.getMinutes())}`; }
+        function adminHeaders() { return { 'x-admin-pw': adminPw }; }
+
+        // 서버에서 목록 불러오기
+        async function loadRentals() {
+            try {
+                const res = await fetch(API, { cache: 'no-store' });
+                if (!res.ok) throw new Error('불러오기 실패');
+                rentals = await res.json();
+                renderAll();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        window.onload = function () {
             loadRentals();
-            renderAll();
+            setInterval(loadRentals, 5000); // 5초마다 자동 갱신
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) loadRentals();
+            });
         };
 
-        // Load data from LocalStorage
-        function loadRentals() {
-            try {
-                const stored = localStorage.getItem(STORAGE_KEY);
-                if (stored) {
-                    rentals = JSON.parse(stored);
-                } else {
-                    rentals = [];
-                }
-            } catch (e) {
-                console.error("로컬 저장소 로드 실패:", e);
-                rentals = [];
-            }
-        }
-
-        // Save data to LocalStorage
-        function saveRentals() {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(rentals));
-            } catch (e) {
-                console.error("로컬 저장소 저장 실패:", e);
-                showToast("⚠️ 저장 공간 부족으로 저장이 되지 않았습니다.");
-            }
-        }
-
-        // Handle Add Rental
-        function handleFormSubmit(event) {
+        // 대여 등록
+        async function handleFormSubmit(event) {
             event.preventDefault();
             const dong = document.getElementById('dong').value.trim();
             const ho = document.getElementById('ho').value.trim();
-            const racket = document.getElementById('racket').value;
-            const ball = document.getElementById('ball').value;
+            if (!dong || !ho) return showToast('동과 호수를 입력해 주세요.');
 
-            if (!dong || !ho) {
-                showToast('동과 호수를 입력해 주세요.');
-                return;
+            const d = new Date();
+            const borrowTime = `${d.getMonth() + 1}/${d.getDate()} ${two(d.getHours())}:${two(d.getMinutes())}`;
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        dong, ho, borrowTime,
+                        racket: document.getElementById('racket').value,
+                        ball: document.getElementById('ball').value
+                    })
+                });
+                if (!res.ok) throw new Error();
+                document.getElementById('dong').value = '';
+                document.getElementById('ho').value = '';
+                await loadRentals();
+                showToast(`✅ ${dong}동 ${ho}호 대여가 등록되었습니다.`);
+            } catch (e) {
+                showToast('⚠️ 등록 실패. 인터넷 연결을 확인하세요.');
+            } finally {
+                btn.disabled = false;
             }
-
-            const now = new Date();
-            const timeString = `${now.getMonth() + 1}/${now.getDate()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-
-            const newRental = {
-                id: 'rental_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-                dong: dong,
-                ho: ho,
-                racket: racket,
-                ball: ball,
-                borrowTime: timeString,
-                returnTime: null,
-                isReturned: false,
-                createdAt: Date.now()
-            };
-
-            rentals.unshift(newRental);
-            saveRentals();
-            renderAll();
-
-            document.getElementById('dong').value = '';
-            document.getElementById('ho').value = '';
-            showToast(`✅ ${dong}동 ${ho}호 대여가 정상 등록되었습니다.`);
         }
 
-        // Return item
-        function returnRental(id) {
+        // 반납
+        async function returnRental(id) {
             const item = rentals.find(r => r.id === id);
             if (!item) return;
-
-            const now = new Date();
-            const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-
-            item.isReturned = true;
-            item.returnTime = timeString;
-
-            saveRentals();
-            renderAll();
-            showToast(`🏓 ${item.dong}동 ${item.ho}호 반납 처리가 완료되었습니다.`);
+            try {
+                const res = await fetch(API, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ id, action: 'return', returnTime: nowHM() })
+                });
+                if (!res.ok) throw new Error();
+                await loadRentals();
+                showToast(`🏓 ${item.dong}동 ${item.ho}호 반납 처리 완료`);
+            } catch (e) {
+                showToast('⚠️ 반납 처리 실패');
+            }
         }
 
-        // Open Edit Modal
+        // 수정창
         function openEditModal(id) {
             const item = rentals.find(r => r.id === id);
             if (!item) return;
-
             document.getElementById('edit-id').value = item.id;
             document.getElementById('edit-dong').value = item.dong;
             document.getElementById('edit-ho').value = item.ho;
             document.getElementById('edit-racket').value = item.racket;
             document.getElementById('edit-ball').value = item.ball;
             document.getElementById('edit-status').value = item.isReturned ? 'returned' : 'renting';
-
             document.getElementById('edit-modal').classList.remove('hidden');
         }
 
@@ -418,150 +323,143 @@
             document.getElementById('edit-modal').classList.add('hidden');
         }
 
-        function handleEditFormSubmit(e) {
+        async function handleEditFormSubmit(e) {
             e.preventDefault();
             const id = document.getElementById('edit-id').value;
             const item = rentals.find(r => r.id === id);
             if (!item) return;
 
             const isReturned = document.getElementById('edit-status').value === 'returned';
-            
-            item.dong = document.getElementById('edit-dong').value.trim();
-            item.ho = document.getElementById('edit-ho').value.trim();
-            item.racket = document.getElementById('edit-racket').value;
-            item.ball = document.getElementById('edit-ball').value;
+            let returnTime = item.returnTime;
+            if (isReturned && !item.isReturned) returnTime = nowHM();
+            else if (!isReturned) returnTime = null;
 
-            if (isReturned && !item.isReturned) {
-                const now = new Date();
-                item.returnTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-            } else if (!isReturned) {
-                item.returnTime = null;
+            try {
+                const res = await fetch(API, {
+                    method: 'PATCH',
+                    headers: adminHeaders(),
+                    body: JSON.stringify({
+                        id,
+                        fields: {
+                            dong: document.getElementById('edit-dong').value.trim(),
+                            ho: document.getElementById('edit-ho').value.trim(),
+                            racket: document.getElementById('edit-racket').value,
+                            ball: document.getElementById('edit-ball').value,
+                            isReturned, returnTime
+                        }
+                    })
+                });
+                if (!res.ok) throw new Error();
+                closeEditModal();
+                await loadRentals();
+                showToast('✏️ 수정되었습니다.');
+            } catch (err) {
+                showToast('⚠️ 수정 실패 (관리자 로그인을 확인하세요)');
             }
-            item.isReturned = isReturned;
-
-            saveRentals();
-            renderAll();
-            closeEditModal();
-            showToast("✏️ 내역이 정상 수정되었습니다.");
         }
 
-        // Delete item with custom confirm modal
+        // 삭제
         function deleteRental(id) {
             const item = rentals.find(r => r.id === id);
             if (!item) return;
-
-            showCustomConfirm(
-                "대여 내역 삭제",
-                `${item.dong}동 ${item.ho}호 내역을 삭제하시겠습니까?`,
-                () => {
-                    rentals = rentals.filter(r => r.id !== id);
-                    saveRentals();
-                    renderAll();
-                    showToast("🗑️ 삭제되었습니다.");
+            showCustomConfirm('대여 내역 삭제', `${item.dong}동 ${item.ho}호 내역을 삭제하시겠습니까?`, async () => {
+                try {
+                    const res = await fetch(`${API}?id=${encodeURIComponent(id)}`, { method: 'DELETE', headers: adminHeaders() });
+                    if (!res.ok) throw new Error();
+                    await loadRentals();
+                    showToast('🗑️ 삭제되었습니다.');
+                } catch (e) {
+                    showToast('⚠️ 삭제 실패');
                 }
-            );
+            });
         }
 
-        // Reset all data
+        // 전체 초기화
         function confirmResetAll() {
-            showCustomConfirm(
-                "⚠️ 전체 초기화 경고",
-                "모든 대여 내역을 삭제하시겠습니까? 이 작업은 복구할 수 없습니다.",
-                () => {
-                    rentals = [];
-                    saveRentals();
-                    renderAll();
-                    showToast("🧹 전체 데이터가 초기화되었습니다.");
+            showCustomConfirm('⚠️ 전체 초기화 경고', '모든 대여 내역을 삭제하시겠습니까? 복구할 수 없습니다.', async () => {
+                try {
+                    const res = await fetch(`${API}?all=1`, { method: 'DELETE', headers: adminHeaders() });
+                    if (!res.ok) throw new Error();
+                    await loadRentals();
+                    showToast('🧹 전체 데이터가 초기화되었습니다.');
+                } catch (e) {
+                    showToast('⚠️ 초기화 실패');
                 }
-            );
+            });
         }
 
-        // Admin Auth
-        function checkAdmin() {
+        // 관리자 로그인 (서버가 비밀번호 확인)
+        async function checkAdmin() {
             const pw = document.getElementById('admin-pw').value.trim();
-            if (pw === "0801") {
+            try {
+                const res = await fetch(API + '?verify=1', { headers: { 'x-admin-pw': pw } });
+                if (!res.ok) throw new Error();
+                adminPw = pw;
                 isAdminLoggedIn = true;
                 document.getElementById('admin-auth-box').classList.add('hidden');
                 document.getElementById('admin-panel').classList.remove('hidden');
                 document.getElementById('btn-logout').classList.remove('hidden');
                 renderAdminTable();
-                showToast("🔓 관리자 모드로 접속되었습니다.");
-            } else {
-                showToast("❌ 비밀번호가 올바르지 않습니다.");
+                showToast('🔓 관리자 모드로 접속되었습니다.');
+            } catch (e) {
+                showToast('❌ 비밀번호가 올바르지 않습니다.');
                 document.getElementById('admin-pw').value = '';
             }
         }
 
         function logoutAdmin() {
             isAdminLoggedIn = false;
+            adminPw = '';
             document.getElementById('admin-panel').classList.add('hidden');
             document.getElementById('admin-auth-box').classList.remove('hidden');
             document.getElementById('btn-logout').classList.add('hidden');
             document.getElementById('admin-pw').value = '';
-            showToast("🔒 관리자 모드가 로그아웃되었습니다.");
+            showToast('🔒 로그아웃되었습니다.');
         }
 
         function setAdminFilter(filterType) {
             currentFilter = filterType;
             ['all', 'renting', 'returned'].forEach(t => {
                 const btn = document.getElementById(`tab-${t}`);
-                if (t === filterType) {
-                    btn.className = "flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg text-amber-400 bg-slate-800 transition-all";
-                } else {
-                    btn.className = "flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all";
-                }
+                btn.className = t === filterType
+                    ? 'flex-1 py-2 px-3 text-xs font-semibold rounded-lg text-amber-400 bg-slate-800'
+                    : 'flex-1 py-2 px-3 text-xs font-semibold rounded-lg text-slate-400 hover:text-white';
             });
             renderAdminTable();
         }
 
-        // Render functions
+        // ===== 화면 그리기 =====
         function renderAll() {
             renderUserList();
-            if (isAdminLoggedIn) {
-                renderAdminTable();
-            }
+            if (isAdminLoggedIn) renderAdminTable();
         }
 
         function renderUserList() {
             const container = document.getElementById('rental-list');
-            const activeBadge = document.getElementById('active-count-badge');
-            
             const activeRentals = rentals.filter(r => !r.isReturned);
-            activeBadge.textContent = `${activeRentals.length}건 대여 중`;
+            document.getElementById('active-count-badge').textContent = `${activeRentals.length}건 대여 중`;
 
             if (rentals.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-8 text-slate-400 text-sm">
-                        등록된 대여 내역이 없습니다.
-                    </div>`;
+                container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">등록된 대여 내역이 없습니다.</div>`;
                 return;
             }
 
             container.innerHTML = rentals.map(item => `
-                <div class="flex items-center justify-between p-3.5 rounded-xl border transition-all ${
-                    item.isReturned 
-                        ? 'bg-slate-50 border-slate-200 text-slate-400' 
-                        : 'bg-white border-slate-200 shadow-sm text-slate-800'
+                <div class="flex items-center justify-between p-3.5 rounded-xl border ${
+                    item.isReturned ? 'bg-slate-50 border-slate-200 text-slate-400' : 'bg-white border-slate-200 shadow-sm text-slate-800'
                 }">
                     <div>
                         <div class="font-bold text-base flex items-center gap-2">
                             <span>${item.dong}동 ${item.ho}호</span>
                             ${item.isReturned ? '<span class="text-xs font-semibold px-2 py-0.5 bg-slate-200 text-slate-600 rounded">반납완료</span>' : ''}
                         </div>
-                        <div class="text-xs text-slate-500 mt-0.5">
-                            라켓: ${item.racket} / 공: ${item.ball}
-                        </div>
-                        <div class="text-[11px] text-slate-400 mt-1">
-                            대여: ${item.borrowTime} ${item.returnTime ? `| 반납: ${item.returnTime}` : ''}
-                        </div>
+                        <div class="text-xs text-slate-500 mt-0.5">라켓: ${item.racket} / 공: ${item.ball}</div>
+                        <div class="text-[11px] text-slate-400 mt-1">대여: ${item.borrowTime} ${item.returnTime ? `| 반납: ${item.returnTime}` : ''}</div>
                     </div>
                     <div>
-                        ${!item.isReturned 
-                            ? `<button onclick="returnRental('${item.id}')" class="px-3.5 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow-sm transition-all">
-                                반납하기
-                               </button>` 
-                            : `<span class="text-xs text-slate-400 font-medium px-2 py-1">완료</span>`
-                        }
+                        ${!item.isReturned
+                            ? `<button onclick="returnRental('${item.id}')" class="px-3.5 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow-sm">반납하기</button>`
+                            : `<span class="text-xs text-slate-400 font-medium px-2 py-1">완료</span>`}
                     </div>
                 </div>
             `).join('');
@@ -572,303 +470,111 @@
 
             const tbody = document.getElementById('admin-table-body');
             const cardList = document.getElementById('admin-card-list');
-            const searchKeyword = document.getElementById('admin-search').value.trim();
+            const keyword = document.getElementById('admin-search').value.trim();
 
-            // Stats
             const total = rentals.length;
             const returned = rentals.filter(r => r.isReturned).length;
-            const renting = total - returned;
-
             document.getElementById('stat-total').textContent = `${total}건`;
-            document.getElementById('stat-renting').textContent = `${renting}건`;
+            document.getElementById('stat-renting').textContent = `${total - returned}건`;
             document.getElementById('stat-returned').textContent = `${returned}건`;
 
-            // Filter
             let filtered = rentals.filter(r => {
                 if (currentFilter === 'renting') return !r.isReturned;
                 if (currentFilter === 'returned') return r.isReturned;
                 return true;
             });
+            if (keyword) filtered = filtered.filter(r => r.dong.includes(keyword) || r.ho.includes(keyword));
 
-            // Search
-            if (searchKeyword !== '') {
-                filtered = filtered.filter(r => 
-                    r.dong.includes(searchKeyword) || r.ho.includes(searchKeyword)
-                );
-            }
+            const badge = (item) => `<span class="px-2 py-0.5 text-[11px] font-bold rounded-full ${
+                item.isReturned
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+            }">${item.isReturned ? '반납완료' : '대여중'}</span>`;
 
-            // 1. Mobile Card List Render
-            if (cardList) {
-                if (filtered.length === 0) {
-                    cardList.innerHTML = `<div class="p-6 text-center text-slate-500 text-xs">일치하는 대여 내역이 없습니다.</div>`;
-                } else {
-                    cardList.innerHTML = filtered.map(item => `
-                        <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-3.5 space-y-2 text-xs">
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-white text-sm">${item.dong}동 ${item.ho}호</span>
-                                <span class="px-2 py-0.5 text-[11px] font-bold rounded-full ${
-                                    item.isReturned 
-                                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
-                                        : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                }">
-                                    ${item.isReturned ? '반납완료' : '대여중'}
-                                </span>
-                            </div>
-                            <div class="text-slate-300">
-                                <span class="text-slate-400">품목:</span> 라켓 ${item.racket} / 공 ${item.ball}
-                            </div>
-                            <div class="flex justify-between text-[11px] text-slate-400 pt-1.5 border-t border-slate-800">
-                                <div>대여: ${item.borrowTime}</div>
-                                <div>반납: ${item.returnTime || '-'}</div>
-                            </div>
-                            <div class="flex justify-end gap-2 pt-1">
-                                <button onclick="openEditModal('${item.id}')" class="px-3 py-1.5 bg-blue-600/80 hover:bg-blue-600 text-white font-semibold rounded-lg text-xs">수정</button>
-                                <button onclick="deleteRental('${item.id}')" class="px-3 py-1.5 bg-rose-600/80 hover:bg-rose-600 text-white font-semibold rounded-lg text-xs">삭제</button>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-            }
-
-            // 2. Desktop Table Render
-            if (tbody) {
-                if (filtered.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">일치하는 대여 내역이 없습니다.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = filtered.map(item => `
-                    <tr class="hover:bg-slate-800/50 transition-colors">
-                        <td class="p-3 text-center font-bold text-white">${item.dong}동 ${item.ho}호</td>
-                        <td class="p-3">라켓: ${item.racket} / 공: ${item.ball}</td>
-                        <td class="p-3 text-slate-400">${item.borrowTime}</td>
-                        <td class="p-3 text-slate-400">${item.returnTime || '-'}</td>
-                        <td class="p-3 text-center">
-                            <span class="px-2 py-0.5 text-[11px] font-bold rounded-full ${
-                                item.isReturned 
-                                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
-                                    : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                            }">
-                                ${item.isReturned ? '반납완료' : '대여중'}
-                            </span>
-                        </td>
-                        <td class="p-3 text-center">
-                            <div class="flex items-center justify-center gap-1">
-                                <button onclick="openEditModal('${item.id}')" class="px-2 py-1 bg-blue-600/80 hover:bg-blue-600 text-white text-[11px] font-semibold rounded">수정</button>
-                                <button onclick="deleteRental('${item.id}')" class="px-2 py-1 bg-rose-600/80 hover:bg-rose-600 text-white text-[11px] font-semibold rounded">삭제</button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        // CSV Excel Download
-        function downloadExcel() {
-            if (rentals.length === 0) {
-                showToast("다운로드할 데이터가 없습니다.");
+            if (filtered.length === 0) {
+                cardList.innerHTML = `<div class="p-6 text-center text-slate-500 text-xs">일치하는 대여 내역이 없습니다.</div>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">일치하는 대여 내역이 없습니다.</td></tr>`;
                 return;
             }
 
-            let csvContent = "\uFEFF동,호수,라켓,탁구공,대여시각,반납시각,상태\n";
-            rentals.forEach(item => {
-                const status = item.isReturned ? "반납 완료" : "대여 중";
-                const retTime = item.returnTime ? item.returnTime : "-";
-                csvContent += `"${item.dong}","${item.ho}","${item.racket}","${item.ball}","${item.borrowTime}","${retTime}","${status}"\n`;
-            });
+            cardList.innerHTML = filtered.map(item => `
+                <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-3.5 space-y-2 text-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-white text-sm">${item.dong}동 ${item.ho}호</span>
+                        ${badge(item)}
+                    </div>
+                    <div class="text-slate-300"><span class="text-slate-400">품목:</span> 라켓 ${item.racket} / 공 ${item.ball}</div>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1.5 border-t border-slate-800">
+                        <div>대여: ${item.borrowTime}</div>
+                        <div>반납: ${item.returnTime || '-'}</div>
+                    </div>
+                    <div class="flex justify-end gap-2 pt-1">
+                        <button onclick="openEditModal('${item.id}')" class="px-3 py-1.5 bg-blue-600/80 hover:bg-blue-600 text-white font-semibold rounded-lg text-xs">수정</button>
+                        <button onclick="deleteRental('${item.id}')" class="px-3 py-1.5 bg-rose-600/80 hover:bg-rose-600 text-white font-semibold rounded-lg text-xs">삭제</button>
+                    </div>
+                </div>
+            `).join('');
 
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            const today = new Date().toISOString().slice(0, 10);
-            
-            link.setAttribute("href", url);
-            link.setAttribute("download", `탁구용품_대여내역_${today}.csv`);
+            tbody.innerHTML = filtered.map(item => `
+                <tr class="hover:bg-slate-800/50">
+                    <td class="p-3 text-center font-bold text-white">${item.dong}동 ${item.ho}호</td>
+                    <td class="p-3">라켓: ${item.racket} / 공: ${item.ball}</td>
+                    <td class="p-3 text-slate-400">${item.borrowTime}</td>
+                    <td class="p-3 text-slate-400">${item.returnTime || '-'}</td>
+                    <td class="p-3 text-center">${badge(item)}</td>
+                    <td class="p-3 text-center">
+                        <div class="flex items-center justify-center gap-1">
+                            <button onclick="openEditModal('${item.id}')" class="px-2 py-1 bg-blue-600/80 hover:bg-blue-600 text-white text-[11px] font-semibold rounded">수정</button>
+                            <button onclick="deleteRental('${item.id}')" class="px-2 py-1 bg-rose-600/80 hover:bg-rose-600 text-white text-[11px] font-semibold rounded">삭제</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // CSV 다운로드
+        function downloadExcel() {
+            if (rentals.length === 0) return showToast('다운로드할 데이터가 없습니다.');
+            let csv = "\uFEFF동,호수,라켓,탁구공,대여시각,반납시각,상태\n";
+            rentals.forEach(item => {
+                csv += `"${item.dong}","${item.ho}","${item.racket}","${item.ball}","${item.borrowTime}","${item.returnTime || '-'}","${item.isReturned ? '반납 완료' : '대여 중'}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `탁구용품_대여내역_${new Date().toISOString().slice(0, 10)}.csv`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            showToast("📊 엑셀 CSV 파일이 다운로드되었습니다.");
+            showToast('📊 CSV 파일이 다운로드되었습니다.');
         }
 
-        // --- Data Sync & Cross-Device Merge Logic ---
-
-        function openSyncModal() {
-            // Encode rentals into string code
-            try {
-                const jsonStr = JSON.stringify(rentals);
-                const encodedCode = btoa(encodeURIComponent(jsonStr));
-                document.getElementById('sync-export-code').value = encodedCode;
-            } catch (e) {
-                console.error("인코딩 오류:", e);
-            }
-            document.getElementById('sync-import-code').value = '';
-            document.getElementById('sync-modal').classList.remove('hidden');
-        }
-
-        function closeSyncModal() {
-            document.getElementById('sync-modal').classList.add('hidden');
-        }
-
-        function copySyncCode() {
-            const codeInput = document.getElementById('sync-export-code');
-            codeInput.select();
-            document.execCommand('copy');
-            showToast("📋 동기화 코드가 복사되었습니다!");
-        }
-
-        // Export JSON File
-        function downloadJsonFile() {
-            if (rentals.length === 0) {
-                showToast("내보낼 대여 데이터가 없습니다.");
-                return;
-            }
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(rentals, null, 2));
-            const dlAnchor = document.createElement('a');
-            const dateStr = new Date().toISOString().slice(0, 10);
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `탁구대여백업_${dateStr}.json`);
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
-            showToast("📁 백업 파일이 다운로드되었습니다.");
-        }
-
-        // Import JSON File
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const parsedData = JSON.parse(e.target.result);
-                    mergeRentalData(parsedData);
-                } catch (err) {
-                    showToast("❌ 유효하지 않은 백업 파일 형식입니다.");
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = ''; // Reset input
-        }
-
-        // Import text code (handles whitespace & encoding fixes from messaging apps)
-        function importSyncCodeFromText() {
-            let rawInput = document.getElementById('sync-import-code').value.trim();
-            if (!rawInput) {
-                showToast("붙여넣을 코드를 입력해주세요.");
-                return;
-            }
-
-            // Clean up white spaces, newlines added by messaging platforms
-            rawInput = rawInput.replace(/\s+/g, '');
-
-            try {
-                let parsedData = null;
-                
-                // Try Base64 decoding first
-                try {
-                    const jsonText = decodeURIComponent(atob(rawInput));
-                    parsedData = JSON.parse(jsonText);
-                } catch (e1) {
-                    // Fallback try raw JSON string parse
-                    parsedData = JSON.parse(rawInput);
-                }
-
-                if (Array.isArray(parsedData)) {
-                    mergeRentalData(parsedData);
-                } else {
-                    showToast("❌ 올바른 대여 내역 데이터가 아닙니다.");
-                }
-            } catch (e) {
-                showToast("❌ 코드 해석에 실패했습니다. 올바른 코드를 입력해주세요.");
-            }
-        }
-
-        // Universal Merge Logic
-        function mergeRentalData(importedData) {
-            if (!Array.isArray(importedData)) {
-                showToast("❌ 올바르지 않은 데이터 형식입니다.");
-                return;
-            }
-
-            let addedCount = 0;
-            let updatedCount = 0;
-
-            const existingMap = new Map();
-            rentals.forEach(r => existingMap.set(r.id, r));
-
-            importedData.forEach(item => {
-                if (!item || !item.id) return;
-
-                if (existingMap.has(item.id)) {
-                    // Update return status if imported item has return info
-                    const existing = existingMap.get(item.id);
-                    if (item.isReturned && !existing.isReturned) {
-                        existing.isReturned = true;
-                        existing.returnTime = item.returnTime || existing.returnTime;
-                        updatedCount++;
-                    }
-                } else {
-                    // New item addition
-                    rentals.push(item);
-                    existingMap.set(item.id, item);
-                    addedCount++;
-                }
-            });
-
-            // Sort by creation time descending
-            rentals.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-            saveRentals();
-            renderAll();
-            closeSyncModal();
-
-            if (addedCount === 0 && updatedCount === 0) {
-                showToast("ℹ️ 이미 모든 내역이 최신 상태로 합쳐져 있습니다.");
-            } else {
-                showToast(`✅ ${addedCount}건 추가, ${updatedCount}건 상태 업데이트가 완료되었습니다!`);
-            }
-        }
-
-        // Custom Confirm Dialog helper
+        // 확인창
         function showCustomConfirm(title, message, onOk) {
             document.getElementById('confirm-modal-title').textContent = title;
             document.getElementById('confirm-modal-message').textContent = message;
-            
             const modal = document.getElementById('confirm-modal');
             const btnOk = document.getElementById('confirm-modal-ok');
             const btnCancel = document.getElementById('confirm-modal-cancel');
-
             modal.classList.remove('hidden');
-
-            const handleOk = () => {
-                cleanup();
-                onOk();
-            };
-
-            const handleCancel = () => {
-                cleanup();
-            };
 
             const cleanup = () => {
                 modal.classList.add('hidden');
                 btnOk.removeEventListener('click', handleOk);
-                btnCancel.removeEventListener('click', handleCancel);
+                btnCancel.removeEventListener('click', cleanup);
             };
-
+            const handleOk = () => { cleanup(); onOk(); };
             btnOk.addEventListener('click', handleOk);
-            btnCancel.addEventListener('click', handleCancel);
+            btnCancel.addEventListener('click', cleanup);
         }
 
-        // Toast Notification helper
+        // 알림
         let toastTimeout;
         function showToast(msg) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-message').textContent = msg;
-
             toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
             toast.classList.add('opacity-100', 'translate-y-0');
-
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => {
                 toast.classList.remove('opacity-100', 'translate-y-0');
