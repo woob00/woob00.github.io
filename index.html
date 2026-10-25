@@ -44,6 +44,7 @@
                     <div>
                         <label for="racket" class="block text-xs font-semibold text-slate-600 mb-1">라켓 수량</label>
                         <select id="racket" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                            <option value="0개">0개</option>
                             <option value="2개 (1세트)">2개 (1세트)</option>
                             <option value="4개 (2세트)">4개 (2세트)</option>
                             <option value="1개">1개</option>
@@ -52,6 +53,7 @@
                     <div>
                         <label for="ball" class="block text-xs font-semibold text-slate-600 mb-1">탁구공 수량</label>
                         <select id="ball" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                            <option value="0개">0개</option>
                             <option value="2개">2개</option>
                             <option value="1개">1개</option>
                             <option value="3개 이상">3개 이상</option>
@@ -121,7 +123,7 @@
                     </div>
 
                     <div class="flex gap-2">
-                        <input type="text" id="admin-search" placeholder="동/호수 검색..." oninput="renderAdminTable()"
+                        <input type="text" id="admin-search" placeholder="동/호수 검색..." oninput="resetAdminPageAndRender()"
                             class="flex-1 min-w-[120px] px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none">
                         <button onclick="downloadExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl whitespace-nowrap">
                             📊 CSV 엑셀
@@ -147,6 +149,24 @@
                         </thead>
                         <tbody id="admin-table-body" class="divide-y divide-slate-800"></tbody>
                     </table>
+                </div>
+
+                <!-- 페이지 표시 설정 -->
+                <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-slate-300">
+                    <div class="flex items-center gap-2">
+                        <label for="admin-page-size">페이지당 보기</label>
+                        <select id="admin-page-size" onchange="changeAdminPageSize()" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                            <option value="5">5개씩</option>
+                            <option value="10" selected>10개씩</option>
+                            <option value="20">20개씩</option>
+                        </select>
+                        <span id="admin-page-info" class="text-slate-400"></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="admin-prev-page" onclick="changeAdminPage(-1)" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed">이전</button>
+                        <span id="admin-page-number" class="min-w-[3rem] text-center">1 / 1</span>
+                        <button id="admin-next-page" onclick="changeAdminPage(1)" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed">다음</button>
+                    </div>
                 </div>
 
                 <div class="mt-4 flex justify-between items-center text-xs text-slate-400">
@@ -189,6 +209,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">라켓</label>
                         <select id="edit-racket" class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm">
+                            <option value="0개">0개</option>
                             <option value="2개 (1세트)">2개 (1세트)</option>
                             <option value="4개 (2세트)">4개 (2세트)</option>
                             <option value="1개">1개</option>
@@ -197,6 +218,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">탁구공</label>
                         <select id="edit-ball" class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm">
+                            <option value="0개">0개</option>
                             <option value="2개">2개</option>
                             <option value="1개">1개</option>
                             <option value="3개 이상">3개 이상</option>
@@ -231,6 +253,8 @@
         let isAdminLoggedIn = false;
         let adminPw = '';
         let currentFilter = 'all';
+        let adminCurrentPage = 1;
+        let adminPageSize = 10;
 
         function two(n) { return String(n).padStart(2, '0'); }
         function nowHM() { const d = new Date(); return `${two(d.getHours())}:${two(d.getMinutes())}`; }
@@ -419,6 +443,7 @@
 
         function setAdminFilter(filterType) {
             currentFilter = filterType;
+            adminCurrentPage = 1;
             ['all', 'renting', 'returned'].forEach(t => {
                 const btn = document.getElementById(`tab-${t}`);
                 btn.className = t === filterType
@@ -465,6 +490,22 @@
             `).join('');
         }
 
+        function resetAdminPageAndRender() {
+            adminCurrentPage = 1;
+            renderAdminTable();
+        }
+
+        function changeAdminPageSize() {
+            adminPageSize = Number(document.getElementById('admin-page-size').value) || 10;
+            adminCurrentPage = 1;
+            renderAdminTable();
+        }
+
+        function changeAdminPage(delta) {
+            adminCurrentPage += delta;
+            renderAdminTable();
+        }
+
         function renderAdminTable() {
             if (!isAdminLoggedIn) return;
 
@@ -485,6 +526,17 @@
             });
             if (keyword) filtered = filtered.filter(r => r.dong.includes(keyword) || r.ho.includes(keyword));
 
+            const totalPages = Math.max(1, Math.ceil(filtered.length / adminPageSize));
+            adminCurrentPage = Math.min(Math.max(1, adminCurrentPage), totalPages);
+            const startIndex = (adminCurrentPage - 1) * adminPageSize;
+            const pageItems = filtered.slice(startIndex, startIndex + adminPageSize);
+            document.getElementById('admin-page-info').textContent = filtered.length
+                ? `${startIndex + 1}-${Math.min(startIndex + adminPageSize, filtered.length)} / 총 ${filtered.length}건`
+                : '총 0건';
+            document.getElementById('admin-page-number').textContent = `${adminCurrentPage} / ${totalPages}`;
+            document.getElementById('admin-prev-page').disabled = adminCurrentPage <= 1;
+            document.getElementById('admin-next-page').disabled = adminCurrentPage >= totalPages;
+
             const badge = (item) => `<span class="px-2 py-0.5 text-[11px] font-bold rounded-full ${
                 item.isReturned
                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
@@ -497,7 +549,7 @@
                 return;
             }
 
-            cardList.innerHTML = filtered.map(item => `
+            cardList.innerHTML = pageItems.map(item => `
                 <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-3.5 space-y-2 text-xs">
                     <div class="flex items-center justify-between">
                         <span class="font-bold text-white text-sm">${item.dong}동 ${item.ho}호</span>
@@ -515,7 +567,7 @@
                 </div>
             `).join('');
 
-            tbody.innerHTML = filtered.map(item => `
+            tbody.innerHTML = pageItems.map(item => `
                 <tr class="hover:bg-slate-800/50">
                     <td class="p-3 text-center font-bold text-white">${item.dong}동 ${item.ho}호</td>
                     <td class="p-3">라켓: ${item.racket} / 공: ${item.ball}</td>
