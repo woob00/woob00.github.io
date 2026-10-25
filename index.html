@@ -78,7 +78,17 @@
                     0건 대여 중
                 </span>
             </div>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <label for="user-page-size" class="text-xs font-medium text-slate-500">페이지당 보기</label>
+                <select id="user-page-size" onchange="changeUserPageSize()"
+                    class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                    <option value="5" selected>5개씩 보기</option>
+                    <option value="10">10개씩 보기</option>
+                    <option value="20">20개씩 보기</option>
+                </select>
+            </div>
             <div id="rental-list" class="space-y-3"></div>
+            <div id="user-pagination" class="mt-4 flex flex-wrap items-center justify-center gap-2"></div>
         </div>
 
         <!-- 관리자 -->
@@ -253,6 +263,8 @@
         let isAdminLoggedIn = false;
         let adminPw = '';
         let currentFilter = 'all';
+        let userCurrentPage = 1;
+        let userPageSize = 5;
         let adminCurrentPage = 1;
         let adminPageSize = 10;
 
@@ -459,17 +471,35 @@
             if (isAdminLoggedIn) renderAdminTable();
         }
 
+        function changeUserPageSize() {
+            userPageSize = Number(document.getElementById('user-page-size').value) || 5;
+            userCurrentPage = 1;
+            renderUserList();
+        }
+
+        function goToUserPage(page) {
+            userCurrentPage = page;
+            renderUserList();
+        }
+
         function renderUserList() {
             const container = document.getElementById('rental-list');
+            const pagination = document.getElementById('user-pagination');
             const activeRentals = rentals.filter(r => !r.isReturned);
             document.getElementById('active-count-badge').textContent = `${activeRentals.length}건 대여 중`;
 
             if (rentals.length === 0) {
                 container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">등록된 대여 내역이 없습니다.</div>`;
+                pagination.innerHTML = '';
                 return;
             }
 
-            container.innerHTML = rentals.map(item => `
+            const totalPages = Math.max(1, Math.ceil(rentals.length / userPageSize));
+            userCurrentPage = Math.min(Math.max(1, userCurrentPage), totalPages);
+            const startIndex = (userCurrentPage - 1) * userPageSize;
+            const pageItems = rentals.slice(startIndex, startIndex + userPageSize);
+
+            container.innerHTML = pageItems.map(item => `
                 <div class="flex items-center justify-between p-3.5 rounded-xl border ${
                     item.isReturned ? 'bg-slate-50 border-slate-200 text-slate-400' : 'bg-white border-slate-200 shadow-sm text-slate-800'
                 }">
@@ -488,22 +518,18 @@
                     </div>
                 </div>
             `).join('');
-        }
 
-        function resetAdminPageAndRender() {
-            adminCurrentPage = 1;
-            renderAdminTable();
-        }
-
-        function changeAdminPageSize() {
-            adminPageSize = Number(document.getElementById('admin-page-size').value) || 10;
-            adminCurrentPage = 1;
-            renderAdminTable();
-        }
-
-        function changeAdminPage(delta) {
-            adminCurrentPage += delta;
-            renderAdminTable();
+            const buttonClass = 'min-w-[34px] px-3 py-2 rounded-lg border text-xs font-semibold';
+            let pageButtons = '';
+            pageButtons += `<button onclick="goToUserPage(${userCurrentPage - 1})" ${userCurrentPage === 1 ? 'disabled' : ''}
+                class="${buttonClass} ${userCurrentPage === 1 ? 'text-slate-300 border-slate-200 cursor-not-allowed' : 'text-slate-600 border-slate-300 hover:bg-slate-50'}">이전</button>`;
+            for (let page = 1; page <= totalPages; page++) {
+                pageButtons += `<button onclick="goToUserPage(${page})"
+                    class="${buttonClass} ${page === userCurrentPage ? 'bg-blue-600 text-white border-blue-600' : 'text-slate-600 border-slate-300 hover:bg-slate-50'}">${page}</button>`;
+            }
+            pageButtons += `<button onclick="goToUserPage(${userCurrentPage + 1})" ${userCurrentPage === totalPages ? 'disabled' : ''}
+                class="${buttonClass} ${userCurrentPage === totalPages ? 'text-slate-300 border-slate-200 cursor-not-allowed' : 'text-slate-600 border-slate-300 hover:bg-slate-50'}">다음</button>`;
+            pagination.innerHTML = `<span class="w-full text-center text-[11px] text-slate-400 mb-1">${startIndex + 1}–${Math.min(startIndex + userPageSize, rentals.length)} / 총 ${rentals.length}건</span>${pageButtons}`;
         }
 
         function renderAdminTable() {
